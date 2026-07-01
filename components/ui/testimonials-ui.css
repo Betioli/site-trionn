@@ -1,0 +1,101 @@
+.blur-text-reveal,
+.fade-in-on-scroll,
+.hover-blur,
+.button_wrapper,
+.line-plus-block {
+  display: inline-block;
+}
+
+.blur-text-reveal {
+  position: relative;
+  will-change: transform, opacity;
+}
+
+.blur-text__char,
+.blur-text__word {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+.fade-in-on-scroll {
+  width: 100%;
+}
+
+.hover-blur {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  overflow: hidden;
+}
+
+.hover-blur__original,
+.hover-blur__clone {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.hover-blur__clone {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.hover-blur__char {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+.button_wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.button_wrapper .text {
+  display: inline-flex;
+  gap: 0.35em;
+  transform: translateY(0);
+  transition: transform 0.35s ease;
+}
+
+.button_wrapper.is-hovered .text {
+  transform: translateY(-1px);
+}
+
+.button_wrapper .word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.line-plus-block {
+  position: relative;
+  width: 100%;
+  min-height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.line-plus-block .line {
+  width: 100%;
+  height: 1px;
+  background: rgba(39, 39, 39, 0.15);
+  display: block;
+  transform-origin: left center;
+}
+
+.line-plus-block .plus {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: transparent;
+}

@@ -1,0 +1,617 @@
+TESTIMONIALS REVERSE ENGINEERING
+
+Objetivo:
+Reconstituir somente a secao Testimonials do bundle Next.js, sem tentar entender o projeto inteiro.
+
+Resultado curto:
+O componente principal existe no chunk 0cdt5vs0zcfks.js (module 30133). Ele renderiza a section#testimonials e depende de:
+- TestimonialsData
+- BlurTextReveal
+- FadeInOnScroll
+- HoverBlur
+- WordShiftButton
+- Divider/LinePlus
+- Swiper React
+- next/image
+- createPortal do react-dom
+
+------------------------------------------------------------
+1) COMPONENTE PRINCIPAL
+------------------------------------------------------------
+
+Arquivo bundle:
+- 0cdt5vs0zcfks.js
+
+Module:
+- 30133
+
+O que faz:
+- Renderiza <section id="testimonials">
+- Mostra o titulo "Client stories"
+- Mostra a descricao curta
+- Renderiza o divisor horizontal com plus icon
+- Lista as empresas em uma coluna lateral
+- Renderiza um Swiper com autoplay e fade
+- Mostra avatar, nome e cargo do cliente
+- Abre um modal com iframe do YouTube quando existe videoURL
+- Repete o divider no fim quando showBottomLine estiver ativo
+
+Estado local:
+- slide atual: useState(0)
+- video modal aberto: useState(null)
+
+Refs:
+- swiper instance ref
+
+Handlers:
+- onSlideChange -> atualiza o slide ativo
+- slideToLoop(index) -> sincroniza clique na lista lateral com o Swiper
+- abrir modal -> seta videoURL e dispara window event trionn-modal:open
+- fechar modal -> limpa videoURL e dispara trionn-modal:close
+
+------------------------------------------------------------
+2) COMPONENTES FILHOS / AUXILIARES
+------------------------------------------------------------
+
+Diretos na section:
+- BlurTextReveal
+- FadeInOnScroll
+- HoverBlur
+- WordShiftButton
+- DividerPlus / LinePlusBlock
+
+Indiretos na arvore:
+- Swiper
+- SwiperSlide
+- next/image
+- createPortal
+
+Arquivos bundle relacionados:
+- BlurTextReveal: 0.glyt1p4d3_o.js -> module 91092, exportado por 90782
+- FadeInOnScroll: 0~c9hxk6d_f9m.js -> module 38846, exportado por 19442
+- HoverBlur: 0yhyjmpxntzgh.js -> module 3918, exportado por 34470
+- WordShiftButton: 0yhyjmpxntzgh.js -> module 11846
+- DividerPlus: 0hy4s_59bkbd5.js -> module 70221
+
+------------------------------------------------------------
+3) HOOKS UTILIZADOS
+------------------------------------------------------------
+
+No componente Testimonials:
+- useState
+- useRef
+- useCallback
+
+Nos filhos:
+- BlurTextReveal: useRef, useImperativeHandle, useGSAP
+- FadeInOnScroll: useRef, useEffect, useGSAP
+- HoverBlur: useRef, useEffect
+- WordShiftButton: useRef, useMemo, useEffect
+- DividerPlus: useRef, useEffect, useGSAP
+
+Obs:
+- Nenhum uso direto de useMemo/useLayoutEffect/useCallback no componente principal alem do controle do swiper e do modal.
+
+------------------------------------------------------------
+4) ANIMACOES E INTERACOES
+------------------------------------------------------------
+
+Swiper:
+- autoplay: delay 5000
+- disableOnInteraction: false
+- pauseOnMouseEnter: true
+- loop: true
+- effect: fade
+- fadeEffect.crossFade: true
+- navigation customizada com .js-testimonials-prev e .js-testimonials-next
+
+Hover:
+- Lista lateral troca opacidade entre item ativo e inativos
+- Arrows usam hover CSS em .custom-arrow
+- Button "Listen to him!" usa HoverBlur
+- Botao "become a client" usa WordShiftButton
+
+Video modal:
+- Abrir por click no botao "Listen to him!"
+- Fecha ao clicar no backdrop ou no botao Close
+- iframe do YouTube em aspect-video
+
+Scroll / reveal:
+- BlurTextReveal usa SplitText + ScrollTrigger + GSAP
+- FadeInOnScroll usa IntersectionObserver
+- DividerPlus usa ScrollTrigger + DrawSVGPlugin
+- WordShiftButton usa hover animado via Web Animations API e resize listener
+
+Nao encontrados no Testimonials:
+- Framer Motion direto
+- GSAP direto no componente principal
+- GSAP direct import no Testimonials, mas sim em filhos
+- MutationObserver
+- Canvas
+- Lenis local na section
+- clip-path na section principal
+- mask na section principal
+- requestAnimationFrame direto no Testimonials principal
+
+------------------------------------------------------------
+5) DADOS
+------------------------------------------------------------
+
+Arquivo bundle:
+- 15ky3h9upk1qm.js
+
+Module:
+- 42163
+
+Export:
+- TestimonialsData
+
+Itens encontrados:
+
+1. Luxury presence
+- clientName: Malte Smith
+- clientDeg: Founder & CEO · USA
+- clientImage: /images/malte.webp
+- videoURL: https://www.youtube.com/embed/rOAsYNtPAmQ?autoplay=1
+
+2. credible
+- clientName: Stephen Dash
+- clientDeg: Founder & CEO · USA
+- clientImage: /images/stephen.webp
+- sem videoURL
+
+3. Fast resume
+- clientName: Doug Petrie
+- clientDeg: Founder & CEO · USA
+- clientImage: /images/doug.webp
+- videoURL: https://www.youtube.com/embed/eKB_kigzDwA?autoplay=1
+
+4. Technis
+- clientName: Jean-Baptiste Biolay
+- clientDeg: General Manager · UAE
+- clientImage: /images/jean.webp
+- sem videoURL
+
+5. Ventigence
+- clientName: Zoltan Csonka
+- clientDeg: Founder & CEO · UAE
+- clientImage: /images/zoltan.webp
+- videoURL: https://www.youtube.com/embed/9F4WsbJ1mrc?autoplay=1
+
+------------------------------------------------------------
+6) IMPORTS E DEPENDENCIAS
+------------------------------------------------------------
+
+Diretos no Testimonials:
+- react
+- react-dom/createPortal
+- next/image
+- Swiper React
+- TestimonialsData
+- BlurTextReveal
+- FadeInOnScroll
+- HoverBlur
+- WordShiftButton
+- DividerPlus
+
+Indiretos importantes:
+- gsap
+- ScrollTrigger
+- DrawSVGPlugin
+- SplitText
+- useGSAP
+- Swiper autoplay/navigation/fade
+- IntersectionObserver
+- ResizeObserver
+- requestAnimationFrame
+- Web Animations API
+
+------------------------------------------------------------
+7) CSS E ESTILOS
+------------------------------------------------------------
+
+Arquivos CSS relevantes:
+- 0sc3z3ff25230.css
+- 0xt8hh0aijjr~.css
+
+O que cada um traz:
+
+0xt8hh0aijjr~.css
+- estilos base do Swiper
+- .swiper
+- .swiper-wrapper
+- .swiper-slide
+- .swiper-fade
+- .swiper-button-prev / .swiper-button-next
+- .swiper-pagination
+- .swiper-lazy-preloader
+
+0sc3z3ff25230.css
+- classes globais do projeto
+- .custom-arrow
+- .arrow-icon
+- .button_wrapper
+- .word
+- .text
+- .button_wrapper.is-hovered .text
+- tipografia global
+- containers globais
+- utilitarios e breakpoints do Tailwind gerado
+
+CSS custom relacionado ao Testimonials:
+- .custom-arrow e .arrow-icon sao usados nas setas do swiper
+- .button_wrapper e .word sao usados pelo WordShiftButton
+- .text-layer, .nav-link e .char sao usados pelo HoverBlur
+
+------------------------------------------------------------
+8) SVG UTILIZADOS
+------------------------------------------------------------
+
+Inline SVGs na section:
+- seta esquerda do swiper
+- seta direita do swiper
+- icone de lista/estado no item ativo da lista lateral
+- botao play "▷" e texto "Listen to him!"
+- Close do modal usa texto, nao SVG
+
+Arquivos SVG externos:
+- nenhum SVG local extra foi usado diretamente pela section
+
+------------------------------------------------------------
+9) ASSETS UTILIZADOS
+------------------------------------------------------------
+
+Imagens de pessoas:
+- /images/malte.webp
+- /images/stephen.webp
+- /images/doug.webp
+- /images/jean.webp
+- /images/zoltan.webp
+
+Videos:
+- nenhum arquivo de video local no Testimonials
+- apenas embeds do YouTube via iframe
+
+URLs de video:
+- https://www.youtube.com/embed/rOAsYNtPAmQ?autoplay=1
+- https://www.youtube.com/embed/eKB_kigzDwA?autoplay=1
+- https://www.youtube.com/embed/9F4WsbJ1mrc?autoplay=1
+
+Outros assets:
+- nenhum asset local extra alem dos avatares
+
+------------------------------------------------------------
+10) CLASSES TAILWIND USADAS
+------------------------------------------------------------
+
+Section principal:
+- relative
+- z-20
+- min-h-dvh
+- bg-[linear-gradient(0deg,#C3C3C3_0%,#FFFFFF_100%)]
+- overflow-hidden
+
+Container:
+- tr__container
+- min-h-dvh
+- py-20
+- lg:py-37.5
+
+Titulo / intro:
+- grid
+- grid-cols-12
+- gap-6
+- text-dark-font
+- col-span-12
+- sm:col-span-6
+- lg:col-span-5
+- lg:col-start-2
+- flex
+- flex-col
+- justify-end
+- small
+
+Divider wrapper:
+- grid
+- grid-cols-12
+- gap-6
+- my-10
+- lg:my-20
+- lg:col-span-10!
+- lg:col-start-2!
+- bg-grey-line/15
+- left-1/2!
+- -translate-x-1/2
+- col-span-12
+- mx-auto
+
+Main area:
+- w-full
+- relative
+- grid
+- grid-cols-12
+- gap-6
+
+Left column:
+- flex
+- flex-col
+- justify-between
+- col-span-12
+- md:col-span-6
+- lg:col-span-5
+- lg:col-start-2
+- order-2
+- md:order-1
+
+Company list:
+- testimonial-company-list
+- flex-col
+- gap-4
+- hidden
+- md:flex
+
+Company button:
+- title
+- flex
+- gap-4
+- items-center
+- text-left
+- transition-all
+- duration-500
+- ease-in-out
+- text-dark-font
+- bg-transparent
+- border-0
+- p-0
+- cursor-pointer
+- opacity-100
+- opacity-30
+- hover:opacity-100
+
+Active icon:
+- icon
+- shrink-0
+- transition-opacity
+- duration-500
+- opacity-100
+- opacity-0
+
+Arrows:
+- flex
+- js-testimonials-prev
+- js-testimonials-next
+- custom-arrow
+- left
+- right
+- cursor-pointer
+- select-none
+- -ml-px
+
+Swiper column:
+- col-span-12
+- md:col-span-6
+- lg:col-span-5
+- order-1
+- md:order-2
+- mb-10
+- md:mb-0
+- swiper-row
+- mx-0!
+- md:max-w-203
+
+Slide content:
+- testimonial-slide
+- h-auto!
+- text-dark-font
+- testimonial-item
+- gap-x-6
+- h-full
+- block
+- md:hidden
+- mb-6
+- mb-10
+- md:mb-20
+- client-info
+- justify-between
+- items-end
+- left-block
+- items-end
+- w-14
+- h-14
+- md:w-20
+- md:h-20
+- overflow-hidden
+- rounded-sm
+- relative
+- transition-all
+- duration-300
+- ease-in-out
+- mr-4
+- md:mr-6
+- flex-col
+- md:mb-1
+- small
+- opacity-60
+- right-block
+- button-text
+- uppercase
+- text-dark-font
+- bg-transparent
+- border-0
+- p-0
+- cursor-pointer
+
+Modal:
+- fixed
+- inset-0
+- z-9999
+- flex
+- items-center
+- justify-center
+- bg-black/80
+- relative
+- w-full
+- max-w-4xl
+- mx-6
+- aspect-video
+- absolute
+- -top-10
+- right-0
+- text-white
+- text-sm
+- uppercase
+- tracking-widest
+- bg-transparent
+- border-0
+- cursor-pointer
+- h-full
+
+WordShiftButton / HoverBlur / DividerPlus classes:
+- button_wrapper
+- word
+- text
+- nav-link
+- text-layer
+- original
+- clone
+- char
+- line-plus-block
+- line
+- plus
+- plus-follow
+
+Breakpoints used:
+- sm
+- md
+- lg
+
+------------------------------------------------------------
+11) LEMBRANCA SOBRE FRAMER / GSAP / SWIPER
+------------------------------------------------------------
+
+Encontrado:
+- GSAP
+- ScrollTrigger
+- DrawSVGPlugin
+- SplitText
+- useGSAP
+- Swiper
+- Swiper autoplay
+- Swiper fade
+- Swiper navigation
+
+Nao encontrado:
+- Framer Motion
+- GSAP direto no componente principal
+- GSAP timeline dentro do Testimonials principal
+- Swiper thumbs/controller
+- Lenis local no Testimonials
+
+------------------------------------------------------------
+12) DEPENDENCIA COMPLETA
+------------------------------------------------------------
+
+Testimonials
+├─ TestimonialsData
+├─ BlurTextReveal
+│  ├─ SplitText
+│  ├─ GSAP
+│  ├─ ScrollTrigger
+│  ├─ useGSAP
+│  └─ ResizeObserver / requestAnimationFrame
+├─ FadeInOnScroll
+│  ├─ GSAP
+│  ├─ IntersectionObserver
+│  └─ useGSAP
+├─ DividerPlus
+│  ├─ GSAP
+│  ├─ ScrollTrigger
+│  ├─ DrawSVGPlugin
+│  ├─ ResizeObserver
+│  └─ requestAnimationFrame
+├─ HoverBlur
+│  ├─ mouseenter / mouseleave
+│  ├─ char spans
+│  ├─ GSAP
+│  └─ DOM event listeners
+├─ WordShiftButton
+│  ├─ useMemo
+│  ├─ useRef
+│  ├─ Web Animations API
+│  ├─ DOMMatrixReadOnly
+│  └─ resize / hover / touch listeners
+├─ Swiper
+│  ├─ autoplay
+│  ├─ fade effect
+│  ├─ navigation
+│  └─ loop
+├─ next/image
+└─ createPortal (react-dom)
+
+------------------------------------------------------------
+13) ARQUIVOS NECESSARIOS PARA RECONSTRUCAO COMPLETA DA SECAO TESTIMONIALS
+------------------------------------------------------------
+
+Bundle / fonte localizada:
+- 0cdt5vs0zcfks.js
+- 15ky3h9upk1qm.js
+- 0.glyt1p4d3_o.js
+- 0yhyjmpxntzgh.js
+- 0hy4s_59bkbd5.js
+- 0~c9hxk6d_f9m.js
+- 0xt8hh0aijjr~.css
+- 0sc3z3ff25230.css
+
+Reconstrucao limpa em React:
+- components/Testimonials/Testimonials.jsx
+- components/Testimonials/TestimonialCard.jsx
+- components/Testimonials/TestimonialVideoModal.jsx
+- components/ui/BlurTextReveal.jsx
+- components/ui/FadeInOnScroll.jsx
+- components/ui/HoverBlur.jsx
+- components/ui/WordShiftButton.jsx
+- components/ui/DividerPlus.jsx
+- data/TestimonialsData.js
+- styles/testimonials.css
+- styles/globals.css
+- assets/images/malte.webp
+- assets/images/stephen.webp
+- assets/images/doug.webp
+- assets/images/jean.webp
+- assets/images/zoltan.webp
+
+Package deps para reproduzir:
+- react
+- react-dom
+- swiper
+- gsap
+- @gsap/react
+
+------------------------------------------------------------
+14) CHECKLIST FINAL
+------------------------------------------------------------
+
+✅ componente principal
+✅ componente filho
+✅ animacoes
+✅ swiper
+✅ framer motion verificado como ausente
+✅ gsap
+✅ hover
+✅ css
+✅ svg
+✅ hooks
+✅ utilitarios
+✅ dados
+✅ assets
+❌ arquivos ainda nao encontrados para Testimonials: nenhum critico
+
+Conclusao:
+O que falta para uma copia fiel em React limpo nao e descoberta de codigo adicional, e sim reescrita dos helpers a partir deste bundle, principalmente:
+- BlurTextReveal
+- FadeInOnScroll
+- HoverBlur
+- WordShiftButton
+- DividerPlus
+- a integracao do Swiper com autoplay/fade/navigation
+
